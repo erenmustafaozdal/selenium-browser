@@ -34,9 +34,11 @@ class Browser:
 
         return super().__new__(cls)
 
+    def __init__(self) -> None:
+        self.excludeSwitches = []
+
     def disable_logging(self):
-        self.options.add_experimental_option(
-            'excludeSwitches', ['enable-logging'])
+        self.excludeSwitches.append('enable-logging')
 
         return self
 
@@ -63,8 +65,7 @@ class Browser:
         return self
 
     def block_popup_windows(self):
-        self.options.add_experimental_option(
-            'excludeSwitches', ['disable-popup-blocking'])
+        self.excludeSwitches.append('disable-popup-blocking')
 
         return self
 
@@ -116,21 +117,23 @@ class Browser:
 
         return self
 
-    def run(self) -> WebDriver:
+    def run(self):
         """
         Tarayıcıyı çalıştırır ve nesnesini döndürür
 
         :return: [WebDriver]
         """
 
+        self.options.add_experimental_option(
+            'excludeSwitches', self.excludeSwitches)
+
         self.driver = webdriver.Chrome(
             service=Service(DriverManager().install()),
             options=self.options
         )
-        self.driver.maximize_window()
-        self.info("Tarayıcı çalıştırıldı")
+        self.logger.info("Tarayıcı çalıştırıldı")
 
-        return self.driver
+        return self
 
     def get(self) -> WebDriver:
         """
@@ -138,8 +141,14 @@ class Browser:
         """
 
         if self.driver is None:
-            return self.run()
+            return self.run().get()
+
         return self.driver
+
+    def maximize_window(self):
+        self.driver.maximize_window()
+
+        return self
 
     def quit(self):
         self.close()
