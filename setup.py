@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name="selenium_web_browser",
-    version="v0.0.1",
+    version="v0.0.2",
     author="Eren Mustafa Özdal",
     author_email="eren.060737@gmail.com",
     packages=find_packages(where="src"),
